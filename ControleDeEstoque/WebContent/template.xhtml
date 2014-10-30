@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:p="http://primefaces.org/ui">
+ <!--  <meta http-equiv="refresh" content="60"/> -->
+    <h:head>
+        
+	<script type="text/javascript">
+	function moeda(z){  
+		v = z.value;
+		v = v.replace(/\D/g,"")  //permite digitar apenas números
+		v = v.replace(/[0-9]{12}/,"inválido")   //limita pra máximo 999.999.999,99
+		v = v.replace(/(\d{1})(\d{8})$/,"$1.$2")  //coloca ponto antes dos últimos 8 digitos
+		v = v.replace(/(\d{1})(\d{5})$/,"$1.$2")  //coloca ponto antes dos últimos 5 digitos
+		v = v.replace(/(\d{1})(\d{1,2})$/,"$1,$2")        //coloca virgula antes dos últimos 2 digitos
+		z.value = 'R$ ' + v;
+	}
+	</script>
+        <style type="text/css">
+            body {
+                font-family: geneva, arial, helvetica, sans-serif;
+                font-size: 70%;
+            }
+        </style>
+
+        <title>Sistema de Pedido Online - VERSÃO TESTE</title>
+    </h:head>
+    <h:body>
+    <f:view>
+        <!-- Full layout -->
+        <p:layout fullPage="true">
+
+            <!-- cabeçalho-->
+            <p:layoutUnit position="north" header="Sistema de Pedido Online - VERSÃO TESTE" >
+           	<br/>
+            </p:layoutUnit>
+            
+            
+            <!-- Menu lateral direito-->
+            <p:layoutUnit position="west" header="Menu" collapsible="true" >
+             
+    	<h:form >
+        		 <p:slideMenu backLabel="Voltar" >
+          				<p:menuitem value="Emitir Pedidos"  action="pedido" />
+						<p:menuitem value="Ver Pedidos" action="verPedidos" />
+                        <p:menuitem value="Produto" action="pesProduto"/>
+                        <p:submenu label="Cadastro">
+                        <p:menuitem value="Cliente" ajax="false" action="cadCliente"/>
+                        <p:menuitem value="Produto" ajax="false" action="cadProduto"/>
+                        </p:submenu>
+                        <p:submenu label="Configuracão" >
+                        <p:menuitem value="Importar CSV" action="importacao" />
+                        <p:menuitem value="Criar banco" action="#{beanBanco.criar}" />
+                        </p:submenu>
+     			</p:slideMenu>              
+       	</h:form>
+
+             </p:layoutUnit>
+
+            <!-- rodapé-->
+            <p:layoutUnit position="south" size="20">
+                Sistema de Pedido Online - VERSÃO BETA TESTE 
+            </p:layoutUnit>
+
+            <!-- conteudo -->
+            <p:layoutUnit position="center">
+
+                <!-- monitor de eventos ajax -->
+                <p:ajaxStatus style="width:16px;height:16px;" id="ajaxStatusPanel" >
+                    <f:facet name="start">
+                        <h:graphicImage value="img/ajax-loader.gif" />
+                    </f:facet>
+                    <f:facet name="complete">
+                        <h:outputText value="" />
+                    </f:facet>
+                </p:ajaxStatus>
+<br />
+<!-- <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>  
+              
+<p:dialog modal="true" widgetVar="statusDialog" header="Status"   
+        draggable="false" closable="false">  
+    <p:graphicImage value="/design/ajaxloadingbar.gif" />
+      
+</p:dialog> 
+-->
+				<ui:insert name="conteudo">
+
+                </ui:insert>
+            </p:layoutUnit> 
+        </p:layout>
+
+ <ui:insert name="dialogs" />
+
+</f:view>
+    </h:body>
+</html>

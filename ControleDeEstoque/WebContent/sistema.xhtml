@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<ui:decorate template="template.xhtml">
+        <ui:define name="conteudo">
+
+	<h:form>	
+		<p:menubar >
+			<p:submenu label="Configuração de Dados">
+				<p:menuitem action="#{beanBanco.criar}" value="Reiniciar Banco de dados " onclick="return confirm('Dejesa Realmente deletar o banco?')"/>
+				<p:menuitem action="#" value="Importar arquivo CSV" onclick="dglupload.show();"/>
+			</p:submenu>
+		</p:menubar>
+	</h:form>
+	
+	<h:form id="formUp" enctype="multipart/form-data" >
+	<p:dialog widgetVar="dglupload" header="Importação de Arquivo CSV" modal="true" appendTo="@(body)" width="40%">
+	<p:fileUpload value="#{beanImportar.file}" mode="simple" allowTypes="/(\.|\/)(csv)$/"/>
+	<p:commandButton value="Iniciar" actionListener="#{beanImportar.lerArquivo}" ajax="false"/>
+	</p:dialog>
+	</h:form>
+</ui:define>
+</ui:decorate>
+		
+
+</html>

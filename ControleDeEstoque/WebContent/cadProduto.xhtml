@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:decorate template="template.xhtml">
+	<ui:define name="conteudo">
+		<!-- Form CRUD cliente -->	
+		<p:fieldset legend="Cadastro de Produto">
+			<h:form id="cadProd">
+			<p:messages/>
+				<h:panelGrid columns="2">
+				<p/>
+				<h:inputHidden value="#{beanProduto.produto.objref}"/>
+					<h:outputLabel value="Codigo:" />
+					<h:inputText value="#{beanProduto.produto.codigo}" p:type="number" required="true" autocomplete="off" requiredMessage="Código Obrigatório!" onkeydown="if(event.keyCode==13) event.keyCode=9;">
+						<f:convertNumber integerOnly="true"/>
+					</h:inputText>
+					
+					<h:outputLabel value="Descrição:" />
+					<h:inputText value="#{beanProduto.produto.descricao}" required="true" requiredMessage="Digite a descrição do produto!" onkeydown="if(event.keyCode==13) event.keyCode=9;"/>
+					
+					<h:outputLabel value="UN:" />
+					<h:inputText value="#{beanProduto.produto.un}" maxlength="14" autocomplete="off" required="true" requiredMessage="UN Obrigatório!" onkeydown="if(event.keyCode==13) event.keyCode=9;"/>
+					
+					<h:outputLabel value="Preço:" />
+					<h:inputText value="#{beanProduto.produto.preco}" onkeyup="moeda(this);" converterId="javax.faces.Double" autocomplete="off" required="true" requiredMessage="Preço Obrigatório!" onkeydown="if(event.keyCode==13) event.keyCode=9;">
+						<f:convertNumber pattern="R$ #,##0.00" />
+					</h:inputText>
+					
+					<p:commandButton value="Salvar" action="#{beanProduto.salvar}" update=":fmProd:tdprod, cadProd"/>
+					<p:commandButton value="Deletar" action="#{beanProduto.delete}" onclick="return confirm('Deseja realmente deletar o cliente e todos os seus pedidos?')" update=":fmProd:tdprod, cadProd" onkeydown="if(event.keyCode==13) event.keyCode=9;"/>
+				</h:panelGrid>
+			</h:form>
+		</p:fieldset>
+		<!-- Fim Form CRUD cliente -->	
+		
+		<!-- PanelGrid para pesquisa do cliente -->
+			<h:form id="fmProd">
+			<h:panelGrid columns="5" width="200">
+					<p:outputLabel value="Pesquisar:  " />
+					<p:selectOneMenu value="#{beanProduto.campo}">
+						<f:selectItem itemLabel="Codigo" itemValue="codigo" />
+						<f:selectItem itemLabel="Ref do Produto" itemValue="objref" />
+						<f:selectItem itemLabel="Descrição" itemValue="descricao" />
+						<f:selectItem itemLabel="Preço" itemValue="preco" />
+					</p:selectOneMenu>
+					<p:selectOneMenu value="#{beanProduto.tipoConsulta}">
+						<f:selectItem itemLabel="Que contenha..." itemValue="0" />
+						<f:selectItem itemLabel="Começando com..." itemValue="3" />
+						<f:selectItem itemLabel="Terminando com..." itemValue="2" />
+					</p:selectOneMenu>
+					<p:inputText value="#{beanProduto.pesProd}" />
+					<p:commandButton icon="ui-icon-search"
+						actionListener="#{beanProduto.findProd}" update=":fmProd:tdprod, :cadProd"/>
+				</h:panelGrid>
+				<p:dataTable id="tdprod" value="#{beanProduto.produtoList}" var="p" emptyMessage="Não foram encontrados registros ou a tabela ainda não foi carregada">
+					<p:column headerText="Ref">
+					<h:outputText value="#{p.objref}"/>
+					</p:column>
+					<p:column headerText="Codigo">
+					<h:outputText value="#{p.codigo}"/>
+					</p:column>
+					<p:column headerText="Descrição">
+					<h:outputText value="#{p.descricao}"/>
+					</p:column>
+					<p:column headerText="UN">
+					<h:outputText value="#{p.un}"/>
+					</p:column>
+					<p:column headerText="Preço">
+					<h:outputText value="#{p.preco}"/>
+					</p:column>
+						<p:column headerText="Opções" >
+						<h:commandLink id="btEditar" action="#{beanProduto.selecionado}" update=":cadProd">
+							<h:graphicImage library="img" name="editar.png" style="border:0"/>
+							<f:setPropertyActionListener target="#{beanProduto.produto}" value="#{p}" />
+						</h:commandLink>
+						<h:commandLink id="btExcluir" action="#{beanProduto.delete}" onclick="return confirm('Deseja realmente deletar o produto e todos os seus pedidos?')" >
+							<h:graphicImage library="img" name="excluir.png" style="border:0"/>
+							<f:setPropertyActionListener target="#{beanProduto.produto}" value="#{p}" />
+						</h:commandLink>
+						</p:column>
+				</p:dataTable>
+		</h:form>
+			<!-- Fim PanelGrid e datatable -->
+	
+	</ui:define>
+</ui:decorate>
+
+
+</html>

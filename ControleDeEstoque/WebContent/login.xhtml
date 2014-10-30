@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+        
+        <style type="text/css">
+            body {
+                font-family: geneva, arial, helvetica, sans-serif;
+                font-size: 70%;
+            }
+        </style>
+
+
+</h:head>
+<h:body>
+<f:view>
+		<h:form>
+			<p:dialog header="Login - Sistema de pedidos online " widgetVar="dlgLogin"
+				appendTo="@(body)" closable="false" maximizable="false"
+				minimizable="false" modal="true" visible="true" resizable="false" draggable="false" >
+				<h:panelGrid columns="2">
+					<h:outputText value="Usuario:" />
+					<h:inputText value="" />
+					<h:outputText value="Senha:" />
+					<h:inputSecret value="" />
+					<p:commandButton value="Entrar" action="verPedidos" />
+				</h:panelGrid>
+			</p:dialog>
+
+
+		</h:form>
+</f:view>
+</h:body>
+</html>

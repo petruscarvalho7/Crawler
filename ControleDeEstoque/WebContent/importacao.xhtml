@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:decorate template="template.xhtml">
+	<ui:define name="conteudo">
+
+
+		<h:form>
+			<p:fileUpload
+				fileUploadListener="#{fileUploadController.handleFileUpload}"
+				mode="advanced" update="messages" auto="true" sizeLimit="1000000"
+				allowTypes="/(\.|\/)(csv)$/" label="Importar arquivo" invalidFileMessage="Arquivo incorreto: insira um arquivo .csv" fileLimitMessage="Arquivo muito grande" />
+			<p:growl id="messages" showDetail="true" />
+		</h:form>
+	</ui:define>
+
+</ui:decorate>
+
+
+</html>
