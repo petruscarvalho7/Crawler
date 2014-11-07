@@ -49,42 +49,36 @@ public class Crawler {
 
 
 	private static Conteudo popularConteudo(String url, int key) throws SQLException {
-		String sql = "select * from conteudo where url = '"+url+"'";
-		Conteudo con = new Conteudo();
-		ResultSet rs = db.runSql(sql);
+		
+		String sql = "";
+		Conteudo conteudo = new Conteudo();
 		sql = "INSERT INTO conteudo " + "(id,url) VALUES " + "(?,?);";
 		PreparedStatement stmt = db.conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		if(rs.next()){
-			
-		}else{
-			con.setId(key);
-			con.setUrl(url);
-			stmt.setInt(1 , con.getId());
-			stmt.setString(2, con.getUrl());
-			stmt.execute();
-		}
 		
-		return con;
+		conteudo.setId(key);
+		conteudo.setUrl(url);
+		stmt.setInt(1 , conteudo.getId());
+		stmt.setString(2, conteudo.getUrl());
+		stmt.execute();
+		
+		return conteudo;
 		
 	}
 
 	private static void popularComentario(Conteudo c ,String url, int key, String comentario) throws SQLException, IOException {
-		String sql = "select * from comentario";
+		
+		String sql = "";
 		Comentario coment = new Comentario();
-		//ResultSet rs = db.runSql(sql);
 		sql = "INSERT INTO comentario " + "(id,comentario,id_conteudo) VALUES " + "(?,?,?);";
 		PreparedStatement stmt = db.conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		//if(rs.next()){
-			
-		//}else{
-			coment.setId(key);
-			coment.setConteudo(c);
-			stmt.setInt(1 , coment.getId());
-			stmt.setString(2, comentario);
-			stmt.setInt(3,  coment.getConteudo().getId());
-			stmt.execute();
 		
-		//}
+		coment.setId(key);
+		coment.setConteudo(c);
+		stmt.setInt(1 , coment.getId());
+		stmt.setString(2, comentario);
+		stmt.setInt(3,  coment.getConteudo().getId());
+		stmt.execute();
+		
 			
 	}	
 }
