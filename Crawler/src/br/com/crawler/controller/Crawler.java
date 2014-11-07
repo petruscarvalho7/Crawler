@@ -2,7 +2,6 @@ package br.com.crawler.controller;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -34,7 +33,6 @@ public class Crawler {
 			Document doc = Jsoup.connect(url).get();
  
 			Elements questions = doc.select("div.entry");
-			System.out.println(questions.size());
 			
 			for(Element link: questions){
 				
