@@ -16,7 +16,7 @@ public class DatabaseDAO {
 		try {
 			Class.forName(POSTGRESQL_DRIVER);
 			this.conn = DriverManager.getConnection(POSTGRESQL_LOCALHOST, "postgres", "root");
-			System.out.println("Sucesso!!!");
+			System.out.println("Conectado ao DB");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

@@ -23,72 +23,68 @@ public class Crawler {
  
 	public static void main(String[] args) throws SQLException, IOException {
 		
-		//db.runSql2("TRUNCATE conteudo;");
-		processPage("http://www.tripadvisor.com.br/", idSequencial);
+		processPage("http://www.tripadvisor.com.br/Hotel_Review-g190454-d3831132-Reviews-Palais_Hansen_Kempinski_Vienna-Vienna.html", idSequencial);
+		
 	}
  
 	public static void processPage(String url, int key) throws SQLException, IOException{
-		//check if the given URL is already in database
+	
+			Conteudo con = popularConteudo(url, key);	
+			
+			Document doc = Jsoup.connect(url).get();
+ 
+			Elements questions = doc.select("div.entry");
+			System.out.println(questions.size());
+			
+			for(Element link: questions){
+				
+				popularComentario(con, url, key, link.select("p").text());
+				System.out.println(link.select("p").text());
+				key = key + 1;
+				
+			}
+			
+		
+	}
+
+
+	private static Conteudo popularConteudo(String url, int key) throws SQLException {
 		String sql = "select * from conteudo where url = '"+url+"'";
 		Conteudo con = new Conteudo();
 		ResultSet rs = db.runSql(sql);
 		sql = "INSERT INTO conteudo " + "(id,url) VALUES " + "(?,?);";
 		PreparedStatement stmt = db.conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 		if(rs.next()){
+			
 		}else{
 			con.setId(key);
 			con.setUrl(url);
 			stmt.setInt(1 , con.getId());
 			stmt.setString(2, con.getUrl());
 			stmt.execute();
-			
-			//popularComentario(con ,con.getUrl(), key);
-			
-			Document doc = Jsoup.connect(url).get();
- 
-			if(doc.text().contains("hotel")){
-				System.out.println(url);
-			}
- 
-			Elements questions = doc.select("a[href]");
-			for(Element link: questions){
-				if(link.attr("abs:href").contains("Hotel_Review"))
-					System.out.println(doc.select("div.entry.p.partial_entry").text());
-					processPage(link.attr("abs:href"), key+1);
-			}
-			
 		}
+		
+		return con;
+		
 	}
 
-
-	private static void popularComentario(Conteudo c ,String url, int key) throws SQLException, IOException {
-		String sql = "select * from comentario where id_conteudo = '"+c.getId()+"'";
-		Comentario con = new Comentario();
-		ResultSet rs = db.runSql(sql);
-		sql = "INSERT INTO comentario " + "(id,conteudo,comentario) VALUES " + "(?,?,?);";
+	private static void popularComentario(Conteudo c ,String url, int key, String comentario) throws SQLException, IOException {
+		String sql = "select * from comentario";
+		Comentario coment = new Comentario();
+		//ResultSet rs = db.runSql(sql);
+		sql = "INSERT INTO comentario " + "(id,comentario,id_conteudo) VALUES " + "(?,?,?);";
 		PreparedStatement stmt = db.conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		if(rs.next()){
+		//if(rs.next()){
 			
-		}else{
-			con.setId(key);
-			con.setConteudo(c);
-			stmt.setInt(1 , con.getId());
-			stmt.setInt(2,  con.getConteudo().getId());
-			
-			Document doc = Jsoup.connect(url).get();
-			
-			if(doc.text().contains("hotel")){
-				System.out.println(doc.select("p.partial_entry").text());
-			}
- 
-			Elements questions = doc.select("p.partial_entry");
-			for(Element link: questions){
-				if(link.attr("partial_entry").contains("hotel")){
-					con.setComentario(link.attr("partial_entry"));
-					stmt.setString(3, con.getComentario());
-				}
-			}
+		//}else{
+			coment.setId(key);
+			coment.setConteudo(c);
+			stmt.setInt(1 , coment.getId());
+			stmt.setString(2, comentario);
+			stmt.setInt(3,  coment.getConteudo().getId());
 			stmt.execute();
-		}	
-	}
+		
+		//}
+			
+	}	
 }

@@ -29,7 +29,7 @@ public class Comentario implements Serializable{
 	@JoinColumn(name="id_conteudo")
 	private Conteudo conteudo;
 	
-	@Column
+	@Column(length=10000)
 	private String comentario;
 	
 	public Comentario() {
