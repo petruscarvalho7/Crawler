@@ -17,7 +17,7 @@ import br.com.crawler.model.Conteudo;
  
 public class Crawler {
 	
-	private static final String URL = "http://www.tripadvisor.com.br/Hotel_Review-g190454-d3831132-Reviews-Palais_Hansen_Kempinski_Vienna-Vienna.html";
+	private static String URL = "http://www.tripadvisor.com.br/Hotel_Review-g190454-d3831132-Reviews-Palais_Hansen_Kempinski_Vienna-Vienna.html";
 	public static DatabaseDAO db = new DatabaseDAO();
 	public static int idSequencial = 1;
 	private static int contadorPagComentario = 10;
@@ -27,40 +27,42 @@ public class Crawler {
 	
 	public static void main(String[] args) throws SQLException, IOException {
 		
-		processPage(URL);
+		processPage();
 		
 	}
  
-	public static void processPage(String url) throws SQLException, IOException{
+	public static void processPage() throws SQLException, IOException{
 	
-			Conteudo con = popularConteudo(url);	
+			Conteudo con = popularConteudo(URL);	
 			
-			doc =  Jsoup.connect(url).get();
+			doc =  Jsoup.connect(URL).get();
 			
-			processaComentarios(url, con, doc);
+			processaComentarios(URL, con, doc);
 			
-			processaArvoreComentarios(doc, url);
+			processaArvoreComentarios(doc);
 		
 	}
 
-	private static void processaArvoreComentarios(Document doc, String url)
+	private static void processaArvoreComentarios(Document doc)
 			throws SQLException, IOException {
 		
 		Elements questions = doc.select("a.guiArw");
 		
 		if((questions.size() == 1) && (questions.first().attr("abs:href").contains(montarOR()))){
-			processPage(questions.first().attr("abs:href"));
+			URL = questions.first().attr("abs:href");
+			processPage();
 		}
 		else{
 			for(Element link : questions){
+				
 				if(link.attr("abs:href").contains(montarOR())){
-					processPage(link.attr("abs:href"));
+					URL = link.attr("abs:href");
+					processPage();
+					contadorPagComentario += 10;
 				}
 				
 			}
 		}
-			
-			
 	}
 
 	private static String montarOR() {
@@ -68,8 +70,8 @@ public class Crawler {
 		StringBuilder retorno = new StringBuilder("-or");
 		if(contadorPagComentario == 10){
 			retorno.append(contadorPagComentario);
+			contadorPagComentario += 10;
 		}else{
-			contadorPagComentario = contadorPagComentario + 10;
 			retorno = new StringBuilder("-or");
 			retorno.append(contadorPagComentario);
 		}
@@ -129,7 +131,4 @@ public class Crawler {
 		return contadorPagComentario;
 	}
 
-	public static void setContadorPagComentario(int contadorPagComentario) {
-		Crawler.contadorPagComentario = contadorPagComentario;
-	}	
 }
