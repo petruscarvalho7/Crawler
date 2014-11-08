@@ -27,23 +27,19 @@ public class Crawler {
 	
 	public static void main(String[] args) throws SQLException, IOException {
 		
-		
-		processPage();
+		processPage(URL);
 		
 	}
  
-	public static void processPage() throws SQLException, IOException{
+	public static void processPage(String url) throws SQLException, IOException{
 	
-			Conteudo con = popularConteudo(URL);	
+			Conteudo con = popularConteudo(url);	
 			
-			if(doc == null){
-				doc =  Jsoup.connect(URL).get();
-			}
+			doc =  Jsoup.connect(url).get();
 			
-			processaComentarios(URL, con, doc);
-			//System.err.println("PASSOU!");
+			processaComentarios(url, con, doc);
 			
-			processaArvoreComentarios(doc, URL);
+			processaArvoreComentarios(doc, url);
 		
 	}
 
@@ -53,12 +49,12 @@ public class Crawler {
 		Elements questions = doc.select("a.guiArw");
 		
 		if((questions.size() == 1) && (questions.first().attr("abs:href").contains(montarOR()))){
-			processPage();
+			processPage(questions.first().attr("abs:href"));
 		}
 		else{
 			for(Element link : questions){
 				if(link.attr("abs:href").contains(montarOR())){
-					processPage();
+					processPage(link.attr("abs:href"));
 				}
 				
 			}
@@ -70,10 +66,13 @@ public class Crawler {
 	private static String montarOR() {
 		
 		StringBuilder retorno = new StringBuilder("-or");
-		retorno.append(contadorPagComentario);
-		//System.out.println(retorno.toString());
-		contadorPagComentario = contadorPagComentario + 10;
-		
+		if(contadorPagComentario == 10){
+			retorno.append(contadorPagComentario);
+		}else{
+			contadorPagComentario = contadorPagComentario + 10;
+			retorno = new StringBuilder("-or");
+			retorno.append(contadorPagComentario);
+		}
 		return retorno.toString();
 	}
 
@@ -83,7 +82,6 @@ public class Crawler {
 		Elements questions = doc.select("div.entry");
 		
 		for(Element link: questions){
-			
 			popularComentario(con, url, link.select("p").text());
 			System.out.println(link.select("p").text());
 			keyComentario += 1;
